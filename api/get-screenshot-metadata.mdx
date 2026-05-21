@@ -1,0 +1,105 @@
+---
+title: "POST /mcp/get-screenshot-metadata — full record"
+sidebarTitle: "Get Metadata"
+description: "Retrieve full metadata for a screenshot by UUID: title, description, tags, categories, source URL, upload timestamp, and design spec availability flag."
+---
+
+The `/mcp/get-screenshot-metadata` endpoint returns all stored metadata fields for a specific screenshot. Unlike the list endpoint, which returns a lightweight summary for each result, this endpoint provides the complete record — including the source URL, upload timestamp, and a flag indicating whether AI-generated design specifications are available. Use the returned `id` field as the `screenshot_id` parameter when calling `/mcp/get-design-specifications`.
+
+## Endpoint
+
+```
+POST /mcp/get-screenshot-metadata
+```
+
+## Authentication
+
+This endpoint requires a valid API key. Include it as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+You can generate API keys from the Settings page of the application.
+
+## Request body
+
+<ParamField body="screenshot_id" type="string" required>
+  The UUID of the screenshot whose metadata you want to retrieve.
+</ParamField>
+
+## Request example
+
+```json
+{
+  "screenshot_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}
+```
+
+## Response
+
+<ResponseField name="id" type="string">
+  The unique UUID identifier for this screenshot.
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Human-readable title assigned to the screenshot.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Longer description of the screenshot's content or design intent.
+</ResponseField>
+
+<ResponseField name="image_path" type="string">
+  File system path to the stored image file.
+</ResponseField>
+
+<ResponseField name="creation_date" type="string">
+  ISO 8601 timestamp indicating when the original design was created.
+</ResponseField>
+
+<ResponseField name="source_url" type="string">
+  The original URL from which the screenshot was sourced, if provided (e.g., a Dribbble or Behance link).
+</ResponseField>
+
+<ResponseField name="upload_timestamp" type="string">
+  ISO 8601 timestamp recording when the screenshot was uploaded to the hub.
+</ResponseField>
+
+<ResponseField name="tags" type="string[]">
+  List of tags associated with this screenshot.
+</ResponseField>
+
+<ResponseField name="categories" type="string[]">
+  List of categories this screenshot belongs to.
+</ResponseField>
+
+<ResponseField name="has_design_specs" type="boolean">
+  `true` if AI-generated design specifications have been extracted for this screenshot. When `true`, you can call `/mcp/get-design-specifications` with this screenshot's `id` to retrieve the full spec.
+</ResponseField>
+
+## Response example
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "title": "Dashboard UI Concept",
+  "description": "A clean dashboard design with data visualizations",
+  "image_path": "/path/to/image.png",
+  "creation_date": "2024-06-15T14:00:00Z",
+  "source_url": "https://dribbble.com/shots/...",
+  "upload_timestamp": "2024-06-16T09:00:00Z",
+  "tags": ["dashboard", "analytics", "charts"],
+  "categories": ["Dashboards", "Data Visualization"],
+  "has_design_specs": true
+}
+```
+
+## Error codes
+
+| Code  | Meaning                                              |
+| ----- | ---------------------------------------------------- |
+| `400` | `screenshot_id` parameter is missing from the body. |
+| `403` | Missing or invalid API key.                          |
+| `404` | No screenshot found with the given UUID.             |
+| `500` | Internal server error.                               |

@@ -1,0 +1,171 @@
+---
+title: "Connect AI agents to the MCP server"
+sidebarTitle: "Connecting Agents"
+description: "Configure any AI agent to query your local design library using the MCP server's base URL, Bearer token auth, and three structured endpoints."
+---
+
+Once your MCP server is running, any AI agent that can make HTTP POST requests can access your design library. You provide the agent with a base URL and an API key, and it gains immediate access to screenshots, metadata, and design specifications. This page walks you through the full setup process and includes working code examples you can paste directly into your agent.
+
+## Prerequisites
+
+Before connecting an agent, confirm both of the following:
+
+- **Server is running** — the status indicator in Settings shows green. If it is not running, go to Settings and click **Start Server**.
+- **API key is generated** — you have a key copied from Settings. If not, click **Generate New API Key** and copy it immediately.
+
+## Connection details
+
+| Setting | Value |
+|---|---|
+| Base URL | `http://localhost:8080` (change `8080` to your configured port if different) |
+| Authentication | `Authorization: Bearer YOUR_API_KEY` header on every request |
+| Content type | `Content-Type: application/json` |
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Start the MCP server">
+    Open Settings in AI Design Inspiration Hub, set your port (default `8080`), and click **Start Server**. Wait for the status indicator to turn green.
+  </Step>
+  <Step title="Generate and copy an API key">
+    In Settings, click **Generate New API Key**. Copy the key before dismissing the dialog—it is only shown once.
+  </Step>
+  <Step title="Configure your agent">
+    In your agent's configuration, set the base URL to `http://localhost:8080` and add the API key as a Bearer token in the `Authorization` header. Store the key in an environment variable rather than hard-coding it.
+  </Step>
+  <Step title="Test with a health check">
+    Verify the server is reachable without using credentials:
+
+    ```bash
+    curl http://localhost:8080/health
+    ```
+
+    Expected response:
+
+    ```json
+    {
+      "status": "healthy",
+      "service": "AI Design Inspiration Hub MCP Server"
+    }
+    ```
+  </Step>
+  <Step title="List screenshots to verify access">
+    Confirm your API key works by listing the first five screenshots:
+
+    ```bash
+    export API_KEY="your-api-key-here"
+
+    curl -X POST http://localhost:8080/mcp/list-screenshots \
+      -H "Authorization: Bearer $API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"pagination": {"limit": 5}}'
+    ```
+
+    A successful response returns a `screenshots` array and a `total_count`.
+  </Step>
+</Steps>
+
+## Python integration example
+
+The following script lists screenshots filtered by tag, retrieves design specifications for the first result, and prints the color palette. Copy it directly into your agent or use it as a starting point.
+
+```python
+import requests
+
+BASE_URL = "http://localhost:8080"
+API_KEY = "your-api-key-here"  # Use an environment variable in production
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# List screenshots filtered by tag
+response = requests.post(
+    f"{BASE_URL}/mcp/list-screenshots",
+    headers=headers,
+    json={
+        "filter": {
+            "tags": ["mobile", "login"]
+        },
+        "pagination": {
+            "limit": 10,
+            "offset": 0
+        }
+    }
+)
+response.raise_for_status()
+screenshots = response.json()["screenshots"]
+print(f"Found {len(screenshots)} screenshots")
+
+# Get design specifications for the first result
+if screenshots:
+    screenshot_id = screenshots[0]["id"]
+    specs_response = requests.post(
+        f"{BASE_URL}/mcp/get-design-specifications",
+        headers=headers,
+        json={"screenshot_id": screenshot_id}
+    )
+    specs_response.raise_for_status()
+    design_specs = specs_response.json()
+    print(f"Color palette: {design_specs['color_palette']}")
+```
+
+## curl examples
+
+<CodeGroup>
+
+```bash list screenshots
+export API_KEY="your-api-key-here"
+
+curl -X POST http://localhost:8080/mcp/list-screenshots \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "tags": ["mobile", "login"],
+      "categories": ["Authentication"]
+    },
+    "pagination": {
+      "limit": 10,
+      "offset": 0
+    }
+  }'
+```
+
+```bash get screenshot metadata
+export API_KEY="your-api-key-here"
+export SCREENSHOT_ID="your-screenshot-uuid"
+
+curl -X POST http://localhost:8080/mcp/get-screenshot-metadata \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"screenshot_id\": \"$SCREENSHOT_ID\"}"
+```
+
+```bash get design specifications
+export API_KEY="your-api-key-here"
+export SCREENSHOT_ID="your-screenshot-uuid"
+
+curl -X POST http://localhost:8080/mcp/get-design-specifications \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"screenshot_id\": \"$SCREENSHOT_ID\"}"
+```
+
+</CodeGroup>
+
+## Tips for optimizing agent access
+
+- **Use specific filters** — pass tags, categories, or a `title_query` to `listScreenshots` so the agent receives only relevant results. Broad queries return more data and take longer to process.
+- **Cache design specifications** — design specs are generated at upload time and do not change unless you re-upload the image. Your agent can safely cache the response from `getDesignSpecifications` by `screenshot_id`.
+- **Always paginate** — use `limit` and `offset` in every `listScreenshots` request. The default limit is `20`; the maximum is `100`. Never omit pagination on a large library.
+- **Handle errors gracefully** — your agent should handle the following status codes:
+  - `400 Bad Request` — a required parameter (such as `screenshot_id`) is missing or malformed.
+  - `403 Forbidden` — the API key is invalid or missing. See [Authentication](/mcp/authentication).
+  - `404 Not Found` — the requested screenshot or design specification does not exist.
+  - `500 Internal Server Error` — an unexpected server error; retry with exponential backoff.
+
+<Tip>
+  Structure your agent to call `listScreenshots` first to discover relevant screenshot IDs, then call `getDesignSpecifications` only for the IDs it actually needs. This avoids fetching large specification objects for screenshots that are not relevant to the current task.
+</Tip>

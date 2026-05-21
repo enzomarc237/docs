@@ -1,0 +1,90 @@
+---
+title: "Get started with AI Design Inspiration Hub"
+sidebarTitle: "Quick start"
+description: "Install AI Design Inspiration Hub, upload your first screenshot, start the MCP server, and verify the connection — all in under five minutes."
+---
+
+This guide walks you through cloning the repository, building the app, uploading your first screenshot, and testing the MCP server with a curl command. By the end, you'll have a running design library that AI agents can query.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **macOS Ventura (13.0) or later**
+- **Flutter SDK 3.0 or later** — see the [Flutter installation guide](https://docs.flutter.dev/get-started/install) if you haven't set it up yet
+
+## Steps
+
+<Steps>
+  <Step title="Clone the repo and install dependencies">
+    Clone the repository and fetch the Flutter package dependencies:
+
+    ```bash
+    git clone https://github.com/enzomarc237/ADH.git
+    cd ADH
+    flutter pub get
+    ```
+  </Step>
+
+  <Step title="Generate serialization code">
+    The app uses `build_runner` to generate JSON serialization code. Run this once before your first build (and again any time you modify model files):
+
+    ```bash
+    flutter pub run build_runner build --delete-conflicting-outputs
+    ```
+  </Step>
+
+  <Step title="Run the app">
+    Launch the app on macOS:
+
+    ```bash
+    flutter run -d macos
+    ```
+
+    The application window opens. You'll see an empty library with a prompt to upload your first screenshot.
+  </Step>
+
+  <Step title="Upload your first screenshot">
+    1. Click **Upload** in the toolbar.
+    2. Fill in the metadata form — give the screenshot a title and add a few tags (for example, `dashboard, analytics, dark-mode`).
+    3. Select an image file (PNG, JPG, SVG, or WebP).
+    4. Click **Upload**.
+
+    The app saves the screenshot and immediately starts analyzing it in the background to extract its color palette and layout information.
+  </Step>
+
+  <Step title="Start the MCP server and generate an API key">
+    1. Click **Settings** in the sidebar.
+    2. Click **Start Server**. The status indicator turns green when the server is running on port 8080.
+    3. Click **Generate New API Key**.
+    4. Copy the key — you'll use it in the next step.
+
+    <Warning>
+      The API key is only shown once. Store it somewhere safe before leaving the Settings page.
+    </Warning>
+  </Step>
+
+  <Step title="Test the server with curl">
+    Verify the server is reachable with a health check (no API key required):
+
+    ```bash
+    curl http://localhost:8080/health
+    ```
+
+    Then confirm your API key works by listing your screenshots:
+
+    ```bash
+    curl -X POST http://localhost:8080/mcp/list-screenshots \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"pagination": {"limit": 5}}'
+    ```
+
+    You should see a JSON response containing the screenshot you uploaded.
+  </Step>
+</Steps>
+
+## Next steps
+
+For a full walkthrough of system requirements, release builds, and packaging as a DMG, see the [installation guide](/installation).
+

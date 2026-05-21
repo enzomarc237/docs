@@ -1,0 +1,290 @@
+---
+title: "POST /mcp/get-design-specifications — design specs"
+sidebarTitle: "Get Design Specs"
+description: "Retrieve structured design specs for a screenshot: color palette with hex and role data, layout type, detected UI components, and typography analysis."
+---
+
+The `/mcp/get-design-specifications` endpoint returns a rich, AI-parsable breakdown of a screenshot's visual design. The response includes the detected layout structure, a list of UI components with their bounding boxes and properties, the full color palette with semantic roles and proportions, and typography details for each text style found in the image. This data is intended to help AI agents understand and reason about design patterns without processing raw image pixels.
+
+## Endpoint
+
+```
+POST /mcp/get-design-specifications
+```
+
+## Authentication
+
+This endpoint requires a valid API key. Include it as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+You can generate API keys from the Settings page of the application.
+
+## Request body
+
+<ParamField body="screenshot_id" type="string" required>
+  The UUID of the screenshot whose design specifications you want to retrieve. You can find this value in the `id` field returned by `/mcp/list-screenshots` or `/mcp/get-screenshot-metadata`.
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  The unique UUID identifier for this design specification record.
+</ResponseField>
+
+<ResponseField name="screenshot_id" type="string">
+  The UUID of the screenshot this specification was generated from.
+</ResponseField>
+
+<ResponseField name="layout_structure" type="object">
+  Detected top-level layout structure of the design.
+
+  <Expandable title="layout_structure properties">
+    <ResponseField name="type" type="string">
+      Layout type identifier, e.g., `"grid"`, `"flexbox"`, `"horizontal"`, `"vertical"`.
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Human-readable description of the detected layout.
+    </ResponseField>
+
+    <ResponseField name="properties" type="object">
+      Additional key/value properties specific to the detected layout type (e.g., `columns`, `aspect_ratio`, `width`, `height`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="ui_components" type="object[]">
+  List of UI components detected in the screenshot.
+
+  <Expandable title="ui_component properties">
+    <ResponseField name="type" type="string">
+      Component type, e.g., `"button"`, `"text_input"`, `"image"`, `"card"`.
+    </ResponseField>
+
+    <ResponseField name="label" type="string">
+      Visible text label associated with the component, if any.
+    </ResponseField>
+
+    <ResponseField name="bounding_box" type="object">
+      Position and size of the component within the image, in pixels.
+
+      <Expandable title="bounding_box properties">
+        <ResponseField name="x" type="number">
+          Horizontal offset from the left edge of the image.
+        </ResponseField>
+        <ResponseField name="y" type="number">
+          Vertical offset from the top edge of the image.
+        </ResponseField>
+        <ResponseField name="width" type="number">
+          Width of the component in pixels.
+        </ResponseField>
+        <ResponseField name="height" type="number">
+          Height of the component in pixels.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="properties" type="object">
+      Component-specific key/value properties (e.g., `background_color`, `text_color`, `border_radius`, `placeholder`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="color_palette" type="object[]">
+  Dominant colors extracted from the screenshot, with semantic context.
+
+  <Expandable title="color_palette item properties">
+    <ResponseField name="hex" type="string">
+      Hex color code, e.g., `"#007AFF"`.
+    </ResponseField>
+
+    <ResponseField name="role" type="string">
+      Semantic role of the color, e.g., `"primary"`, `"secondary"`, `"background"`, `"text"`.
+    </ResponseField>
+
+    <ResponseField name="usage_context" type="string">
+      Where this color is primarily used, e.g., `"main_background"`, `"buttons_links"`, `"body_text"`.
+    </ResponseField>
+
+    <ResponseField name="proportion" type="number">
+      Approximate fraction of the image covered by this color, as a value between `0.0` and `1.0`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="typography" type="object[]">
+  Typography styles detected in the screenshot.
+
+  <Expandable title="typography item properties">
+    <ResponseField name="font_family" type="string">
+      Detected font family name, e.g., `"San Francisco"`, `"Roboto"`.
+    </ResponseField>
+
+    <ResponseField name="font_size_px" type="number">
+      Font size in pixels.
+    </ResponseField>
+
+    <ResponseField name="font_weight" type="string | number">
+      Font weight value, e.g., `400`, `700`, or `"bold"`.
+    </ResponseField>
+
+    <ResponseField name="font_style" type="string">
+      Font style, e.g., `"normal"` or `"italic"`.
+    </ResponseField>
+
+    <ResponseField name="line_height_ratio" type="number">
+      Line height expressed as a ratio relative to the font size (e.g., `1.5` means 1.5× the font size).
+    </ResponseField>
+
+    <ResponseField name="color_hex" type="string">
+      Hex color code of the text, e.g., `"#333333"`.
+    </ResponseField>
+
+    <ResponseField name="sample_text" type="string">
+      A short sample of text rendered in this style, if detected.
+    </ResponseField>
+
+    <ResponseField name="context" type="string">
+      Semantic role of this text style, e.g., `"heading_1"`, `"body_text"`, `"caption"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="general_design_info" type="object">
+  High-level design metadata.
+
+  <Expandable title="general_design_info properties">
+    <ResponseField name="image_dimensions" type="object">
+      Pixel dimensions of the original image (`width` and `height`).
+    </ResponseField>
+
+    <ResponseField name="perceived_style" type="string[]">
+      List of style descriptors inferred from the design, e.g., `["minimalist", "modern"]`.
+    </ResponseField>
+
+    <ResponseField name="spacing_unit" type="string">
+      Base spacing unit detected in the design, e.g., `"8px"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="analysis_timestamp" type="string">
+  ISO 8601 timestamp recording when the analysis was performed.
+</ResponseField>
+
+<ResponseField name="analysis_engine_version" type="string">
+  Version string of the analysis engine that produced this specification (e.g., `"0.1.0"`).
+</ResponseField>
+
+## Response example
+
+```json
+{
+  "id": "f9e8d7c6-b5a4-3210-fedc-ba9876543210",
+  "screenshot_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "layout_structure": {
+    "type": "grid",
+    "description": "3-column grid layout with fixed sidebar",
+    "properties": {
+      "columns": 3,
+      "aspect_ratio": 1.77,
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "ui_components": [
+    {
+      "type": "button",
+      "label": "Sign In",
+      "bounding_box": {
+        "x": 100,
+        "y": 200,
+        "width": 150,
+        "height": 40
+      },
+      "properties": {
+        "background_color": "#007AFF",
+        "text_color": "#FFFFFF",
+        "border_radius": "4px"
+      }
+    },
+    {
+      "type": "text_input",
+      "label": "Email",
+      "bounding_box": {
+        "x": 50,
+        "y": 150,
+        "width": 300,
+        "height": 40
+      },
+      "properties": {
+        "placeholder": "Enter your email",
+        "input_type": "email"
+      }
+    }
+  ],
+  "color_palette": [
+    {
+      "hex": "#FFFFFF",
+      "role": "background",
+      "usage_context": "main_background",
+      "proportion": 0.65
+    },
+    {
+      "hex": "#007AFF",
+      "role": "primary",
+      "usage_context": "buttons_links",
+      "proportion": 0.15
+    },
+    {
+      "hex": "#333333",
+      "role": "text",
+      "usage_context": "body_text",
+      "proportion": 0.12
+    }
+  ],
+  "typography": [
+    {
+      "font_family": "San Francisco",
+      "font_size_px": 16,
+      "font_weight": 400,
+      "font_style": "normal",
+      "line_height_ratio": 1.5,
+      "color_hex": "#333333",
+      "sample_text": "Welcome back",
+      "context": "body_text"
+    },
+    {
+      "font_family": "San Francisco",
+      "font_size_px": 28,
+      "font_weight": 700,
+      "font_style": "normal",
+      "line_height_ratio": 1.2,
+      "color_hex": "#000000",
+      "context": "heading_1"
+    }
+  ],
+  "general_design_info": {
+    "image_dimensions": {
+      "width": 1920,
+      "height": 1080
+    },
+    "perceived_style": ["minimalist", "modern"],
+    "spacing_unit": "8px"
+  },
+  "analysis_timestamp": "2024-06-16T09:05:00Z",
+  "analysis_engine_version": "0.1.0"
+}
+```
+
+## Error codes
+
+| Code  | Meaning                                                       |
+| ----- | ------------------------------------------------------------- |
+| `400` | `screenshot_id` parameter is missing from the request body.  |
+| `403` | Missing or invalid API key.                                   |
+| `404` | No design specifications found for the given screenshot UUID. |
+| `500` | Internal server error.                                        |

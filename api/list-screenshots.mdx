@@ -1,0 +1,154 @@
+---
+title: "POST /mcp/list-screenshots — filter and paginate designs"
+sidebarTitle: "List Screenshots"
+description: "Retrieve a filtered, paginated list of screenshots. Filter by tags (AND), categories, component types, date range, or keyword. Supports offset-based pagination."
+---
+
+The `/mcp/list-screenshots` endpoint returns a filtered, paginated list of screenshots stored in your AI Design Inspiration Hub library. You can narrow results by tags (matched with AND logic), categories (matched with OR logic), UI component types, a date range, or a free-text query against the title and description fields. Use the `pagination` object to page through large result sets without loading everything at once.
+
+## Endpoint
+
+```
+POST /mcp/list-screenshots
+```
+
+## Authentication
+
+This endpoint requires a valid API key. Include it as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+You can generate API keys from the Settings page of the application.
+
+## Request body
+
+<ParamField body="filter" type="object">
+  Optional set of filters to narrow the result set. Omit this field to return all screenshots.
+
+  <Expandable title="filter properties">
+    <ParamField body="tags" type="string[]">
+      Filter by tags using AND logic — only screenshots that have **all** of the specified tags are returned.
+    </ParamField>
+
+    <ParamField body="categories" type="string[]">
+      Filter by categories using OR logic — screenshots that belong to **any** of the specified categories are returned.
+    </ParamField>
+
+    <ParamField body="component_types" type="string[]">
+      Filter by the UI component types detected in the screenshot's design specifications (e.g., `"button"`, `"text_input"`, `"card"`).
+    </ParamField>
+
+    <ParamField body="date_from" type="string">
+      Return only screenshots created on or after this ISO 8601 timestamp (e.g., `"2024-01-01T00:00:00Z"`).
+    </ParamField>
+
+    <ParamField body="date_to" type="string">
+      Return only screenshots created on or before this ISO 8601 timestamp (e.g., `"2024-12-31T23:59:59Z"`).
+    </ParamField>
+
+    <ParamField body="title_query" type="string">
+      Free-text search string matched against the screenshot's `title` and `description` fields.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="pagination" type="object">
+  Optional pagination controls. Defaults to the first 20 results if omitted.
+
+  <Expandable title="pagination properties">
+    <ParamField body="limit" type="integer" default="20">
+      Maximum number of screenshots to return. Must be between 1 and 100.
+    </ParamField>
+
+    <ParamField body="offset" type="integer" default="0">
+      Number of screenshots to skip before returning results. Use with `limit` to page through a large library.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Request example
+
+```json
+{
+  "filter": {
+    "tags": ["mobile", "login"],
+    "categories": ["Authentication"],
+    "title_query": "modern",
+    "date_from": "2024-01-01T00:00:00Z",
+    "date_to": "2024-12-31T23:59:59Z"
+  },
+  "pagination": {
+    "limit": 10,
+    "offset": 0
+  }
+}
+```
+
+## Response
+
+<ResponseField name="screenshots" type="object[]">
+  Array of screenshot objects matching the applied filters.
+
+  <Expandable title="screenshot object properties">
+    <ResponseField name="id" type="string">
+      The unique UUID identifier for this screenshot.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Human-readable title assigned to the screenshot.
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Longer description of the screenshot's content or design intent.
+    </ResponseField>
+
+    <ResponseField name="image_path" type="string">
+      File system path to the stored image file.
+    </ResponseField>
+
+    <ResponseField name="creation_date" type="string">
+      ISO 8601 timestamp indicating when the original design was created.
+    </ResponseField>
+
+    <ResponseField name="tags" type="string[]">
+      List of tags associated with this screenshot.
+    </ResponseField>
+
+    <ResponseField name="categories" type="string[]">
+      List of categories this screenshot belongs to.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total_count" type="integer">
+  Total number of screenshots that match the applied filters, regardless of the requested page size. Use this value along with `limit` and `offset` to implement pagination in your client.
+</ResponseField>
+
+## Response example
+
+```json
+{
+  "screenshots": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "Modern Login Screen",
+      "description": "A minimalist login interface",
+      "image_path": "/path/to/image.png",
+      "creation_date": "2024-06-15T14:00:00Z",
+      "tags": ["mobile", "login", "minimalist"],
+      "categories": ["Authentication", "Mobile Apps"]
+    }
+  ],
+  "total_count": 42
+}
+```
+
+## Error codes
+
+| Code  | Meaning                                                    |
+| ----- | ---------------------------------------------------------- |
+| `400` | Invalid request parameters (e.g., malformed date strings). |
+| `403` | Missing or invalid API key.                                |
+| `500` | Internal server error.                                     |

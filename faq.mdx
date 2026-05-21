@@ -1,0 +1,55 @@
+---
+title: "AI Design Inspiration Hub frequently asked questions"
+sidebarTitle: "FAQ"
+description: "Answers to common questions about supported formats, local data storage, MCP server setup, design analysis, backups, and platform support."
+---
+
+This page answers the questions most frequently asked about AI Design Inspiration Hub. Topics range from basic usage — such as supported image formats and how to back up your library — to MCP server configuration and platform availability. If your question isn't covered here, check the [Troubleshooting](/troubleshooting) page or open an issue on the project's GitHub repository.
+
+<AccordionGroup>
+  <Accordion title="What image formats does AI Design Inspiration Hub support?">
+    The app accepts PNG, JPG/JPEG, SVG, and WebP files. Files in any other format will be rejected during upload.
+  </Accordion>
+
+  <Accordion title="Is my data stored in the cloud?">
+    No. All data — including screenshots, metadata, and design specifications — is stored locally on your machine in an SQLite database. There is no cloud sync by design, so your design library stays private and under your control.
+  </Accordion>
+
+  <Accordion title="Can multiple AI agents share the same MCP server?">
+    Yes. Generate one API key per agent in **Settings → Generate New API Key**. Each agent authenticates independently using its own key, and all agents connect to the same server at `http://localhost:PORT`.
+  </Accordion>
+
+  <Accordion title="What does the automatic design analysis extract?">
+    When you upload an image, the app analyzes it and extracts:
+
+    - **Color palette** — dominant colors with hex codes and roles such as primary, secondary, and accent
+    - **Layout type** — detected structure such as horizontal, vertical, or grid
+    - **UI components** — detected interface elements
+
+    Typography analysis (font families, sizes, and weights) is planned for a future release.
+  </Accordion>
+
+  <Accordion title="How do I back up my design library?">
+    Click the **Export** button in the toolbar and choose a save location. The app writes a JSON file that includes all screenshot metadata and design specifications. Store this file somewhere safe and export regularly to avoid data loss.
+  </Accordion>
+
+  <Accordion title="Can I use AI Design Inspiration Hub on Windows or Linux?">
+    The app currently targets macOS Ventura (13.0) or later. Because the project is built with Flutter, Windows and Linux builds may be possible in the future, but they are not officially supported today.
+  </Accordion>
+
+  <Accordion title="What port does the MCP server use by default?">
+    The server starts on port **8080** by default. You can change this in **Settings** before clicking **Start Server**. Once the server is running, you must stop it and restart it for a port change to take effect.
+  </Accordion>
+
+  <Accordion title="How do I revoke an API key?">
+    Go to **Settings**, find the key you want to remove in the API keys list, and click the trash icon next to it. The key is deleted immediately and any agent using it will lose access to the MCP server.
+  </Accordion>
+
+  <Accordion title="Is there a rate limit on the MCP server?">
+    No rate limits are applied in the current version. This may change in a future release as the project matures.
+  </Accordion>
+
+  <Accordion title="Can I import a previously exported JSON library?">
+    Import from JSON is not currently supported. If you need to recover data from an export file, you can reference the JSON directly to retrieve metadata, file paths, and design specifications, but the app does not have a built-in import flow at this time.
+  </Accordion>
+</AccordionGroup>

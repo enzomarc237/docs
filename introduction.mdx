@@ -1,0 +1,49 @@
+---
+title: "AI Design Inspiration Hub: Design Library for AI Agents"
+sidebarTitle: "Introduction"
+description: "AI Design Inspiration Hub organizes UI screenshots and wireframes on macOS. A built-in MCP server gives AI agents structured access to your design library."
+---
+
+AI Design Inspiration Hub is a native macOS desktop application that serves as a centralized repository for UI screenshots and wireframes. It lets designers curate and organize design inspiration, then exposes that library to AI agents through a secure, locally hosted Model Context Protocol (MCP) server — so your AI tools can query, filter, and retrieve design specifications programmatically.
+
+## What it does
+
+You upload screenshots and wireframes, enrich them with titles, tags, and categories, and the app automatically analyzes each image to extract color palettes, layout information, and UI component details. Once your library is populated, you start the built-in MCP server and generate an API key. Any AI agent that can make HTTP requests can then list your screenshots, fetch metadata for a specific design, or pull structured design specifications — all from `http://localhost:8080`.
+
+All data is stored locally on your machine using SQLite. There is no cloud sync, and the MCP server only accepts connections from localhost.
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Upload and organize" icon="images">
+    Upload PNG, JPG, SVG, or WebP screenshots and enrich them with titles, descriptions, tags, and categories. Drag-and-drop is also supported.
+  </Card>
+  <Card title="Automatic design analysis" icon="wand-magic-sparkles">
+    Every upload is analyzed in the background to extract dominant color palettes, layout type, and structural information — no manual effort required.
+  </Card>
+  <Card title="MCP server" icon="server">
+    Start a local HTTP server that exposes three purpose-built endpoints for AI agents: list screenshots, get metadata, and get design specifications.
+  </Card>
+  <Card title="JSON export" icon="file-export">
+    Export your entire library or selected items to JSON for backup, migration, or use as training data for ML models.
+  </Card>
+</CardGroup>
+
+## Who it's for
+
+AI Design Inspiration Hub is built for two audiences who often work together:
+
+**Designers** who want a dedicated home for UI inspiration — somewhere to save, tag, and search screenshots without relying on general-purpose tools that weren't built for design assets.
+
+**AI developers** who want to give their agents access to a curated, structured design library. Instead of embedding design context in prompts or managing files manually, you point your agent at the MCP server and let it query your library directly.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quick start" icon="bolt" href="/quickstart">
+    Install the app, upload your first screenshot, and start the MCP server in a few minutes.
+  </Card>
+  <Card title="MCP server overview" icon="plug" href="/mcp/overview">
+    Learn how the MCP server works, what endpoints are available, and how to connect an AI agent.
+  </Card>
+</CardGroup>

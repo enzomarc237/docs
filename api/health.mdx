@@ -1,0 +1,56 @@
+---
+title: "GET /health — MCP server health check endpoint"
+sidebarTitle: "GET /health"
+description: "Check whether the AI Design Inspiration Hub MCP server is running. No authentication required — use this before making authenticated requests."
+---
+
+The `/health` endpoint lets you verify that the MCP server is up and reachable before sending authenticated requests. Because it requires no API key, you can call it at any time — from a startup check in your integration, a monitoring script, or a simple curl command — to confirm the server is accepting connections.
+
+## Endpoint
+
+```
+GET /health
+```
+
+## Authentication
+
+No authentication is required for this endpoint. You can call it without an `Authorization` header.
+
+## Response
+
+A `200 OK` response with the following JSON body indicates the server is running normally:
+
+```json
+{
+  "status": "healthy",
+  "service": "AI Design Inspiration Hub MCP Server"
+}
+```
+
+| Field     | Type   | Description                                    |
+| --------- | ------ | ---------------------------------------------- |
+| `status`  | string | Always `"healthy"` when the server is running. |
+| `service` | string | Human-readable name of the running service.    |
+
+## Use case
+
+Call `/health` at the start of your integration to confirm the server is reachable before generating or using an API key. This is especially useful in automated pipelines where you want to fail fast rather than send authenticated requests to an unavailable server.
+
+## Example
+
+<CodeGroup>
+
+```bash curl
+curl http://localhost:8080/health
+```
+
+```python Python
+import requests
+
+response = requests.get("http://localhost:8080/health")
+response.raise_for_status()
+print(response.json())
+# {'status': 'healthy', 'service': 'AI Design Inspiration Hub MCP Server'}
+```
+
+</CodeGroup>

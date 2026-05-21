@@ -1,0 +1,87 @@
+{
+  "projectType": "saas",
+  "projectName": "AI Design Inspiration Hub",
+  "projectDescription": "A native macOS desktop app for organizing UI screenshots and wireframes, with a built-in MCP server that lets AI agents query your design library.",
+  "theme": "willow",
+  "primaryColor": "#848c8e",
+  "lightColor": "#11161e",
+  "darkColor": "#cfd0d2",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Using the App",
+            "pages": [
+              "guides/uploading-screenshots",
+              "guides/organizing-library",
+              "guides/searching-filtering",
+              "guides/exporting-data"
+            ]
+          },
+          {
+            "group": "MCP Server",
+            "pages": [
+              "mcp/overview",
+              "mcp/authentication",
+              "mcp/connecting-agents"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "troubleshooting",
+              "faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/health",
+              "api/list-screenshots",
+              "api/get-screenshot-metadata",
+              "api/get-design-specifications"
+            ]
+          },
+          {
+            "group": "Data Types",
+            "pages": [
+              "api/data-types"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Upload and organize UI screenshots and wireframes with rich metadata",
+    "Automatic design analysis: color palettes, layout detection, UI components",
+    "Tag and category system for flexible library organization",
+    "Full-text and tag-based search and filtering",
+    "Built-in MCP (Model Context Protocol) server for AI agent access",
+    "API key management for secure agent authentication",
+    "JSON export of your entire design library",
+    "Native macOS menubar integration",
+    "Local-only storage for privacy (no cloud sync)"
+  ],
+  "publicApiSurface": [
+    "GET /health",
+    "POST /mcp/list-screenshots",
+    "POST /mcp/get-screenshot-metadata",
+    "POST /mcp/get-design-specifications"
+  ]
+}

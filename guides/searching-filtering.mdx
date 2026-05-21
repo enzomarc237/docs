@@ -1,0 +1,53 @@
+---
+title: "Search and filter your screenshot library"
+sidebarTitle: "Search & Filter"
+description: "Find screenshots instantly using the search bar for keyword matches or click tags and categories to filter your library down to exactly what you need."
+---
+
+As your design library grows, being able to find the right screenshot quickly becomes essential. AI Design Inspiration Hub gives you a search bar for keyword lookups and tag and category filters for browsing by label — and you can combine all three to narrow results precisely.
+
+## Search bar
+
+The search bar appears at the top of the Screenshots view. As you type, the grid updates in real time to show only matching screenshots.
+
+The search runs across:
+
+- Screenshot **titles**
+- Screenshot **descriptions**
+- Associated **tags**
+
+Search behavior:
+
+- **Case-insensitive** — `Login` and `login` return the same results
+- **Partial matches** — searching `dash` will match screenshots tagged `dashboard`
+- **Instant results** — the view updates as you type, no need to press Enter
+
+<Tip>
+Use specific keywords for tighter results. If you get too many matches, try combining the search bar with tag or category filters. If you get no results, check spelling and try a shorter or different keyword — partial matches help but only if the stem is correct.
+</Tip>
+
+## Filtering by tags
+
+Tag filters let you browse by label instead of typing keywords.
+
+1. Click any tag displayed on a screenshot card (or in the tag list in the sidebar).
+2. The grid narrows to show only screenshots with that tag.
+3. Click another tag to add it to the active filters — the view uses **AND logic**, so only screenshots matching all selected tags appear.
+
+This makes it easy to find, for example, all screenshots that are both `mobile` and `checkout`.
+
+## Filtering by categories
+
+Category filtering works the same way as tag filtering:
+
+1. Click a category name anywhere it appears in the interface.
+2. The grid updates to show only screenshots in that category.
+3. Combine with tag filters or the search bar to refine further.
+
+## Clearing filters
+
+When you want to see your full library again, click the **Clear Filters** button. This resets both tag and category filters and clears the search bar in one step.
+
+## Date range filtering
+
+Date range filtering is available via the MCP API for AI agents. Agents can pass `date_from` and `date_to` fields in their `listScreenshots` requests to retrieve screenshots uploaded within a specific time window. See the API documentation for the full request schema.

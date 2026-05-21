@@ -1,0 +1,46 @@
+---
+title: "AI Design Inspiration Hub: Your Design Library for AI"
+description: "AI Design Inspiration Hub organizes your UI screenshots and wireframes in one place and exposes them to AI agents via a built-in MCP server."
+---
+
+AI Design Inspiration Hub is a native macOS desktop application that helps designers and AI developers build, organize, and share a curated library of UI inspiration. Upload screenshots and wireframes, enrich them with tags and categories, and let the built-in MCP (Model Context Protocol) server make your entire design collection queryable by AI agents.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="bolt" href="/quickstart">
+    Get up and running in under 5 minutes — install the app, upload your first screenshot, and start the MCP server.
+  </Card>
+  <Card title="Using the App" icon="images" href="/guides/uploading-screenshots">
+    Learn how to upload, organize, search, and export your design library.
+  </Card>
+  <Card title="MCP Server" icon="server" href="/mcp/overview">
+    Expose your design library to AI agents over a local HTTP server with API key authentication.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/list-screenshots">
+    Explore every MCP endpoint — request parameters, response schemas, and error codes.
+  </Card>
+</CardGroup>
+
+## How it works
+
+<Steps>
+  <Step title="Install and launch">
+    Build the app from source using Flutter and run it on macOS Ventura or later.
+  </Step>
+  <Step title="Upload your design library">
+    Drag and drop screenshots or use the Upload button to add UI designs. Add titles, tags, and categories to make everything searchable.
+  </Step>
+  <Step title="Start the MCP server">
+    Go to **Settings**, click **Start Server**, and generate an API key. Your design library is now accessible at `http://localhost:8080`.
+  </Step>
+  <Step title="Connect your AI agents">
+    Point any AI agent or script at the MCP endpoints using your API key to list, filter, and retrieve design specifications programmatically.
+  </Step>
+</Steps>
+
+## Key features
+
+- **Automatic design analysis** — Every upload is analyzed for color palettes, layout type, and UI components
+- **Flexible organization** — Tag and categorize screenshots for fast retrieval
+- **MCP-ready** — Three purpose-built endpoints let AI agents query designs, metadata, and specifications
+- **Local-only storage** — All data stays on your machine; no cloud sync required
+- **JSON export** — Back up or migrate your library at any time

@@ -1,0 +1,105 @@
+---
+title: "Export your design library as JSON"
+sidebarTitle: "Export Data"
+description: "Download your entire screenshot library as a structured JSON file containing metadata, design specs, file references, and timestamps for backup or integration."
+---
+
+AI Design Inspiration Hub stores all your data locally, and the export feature lets you take a snapshot of that data at any time. The exported JSON file contains every screenshot's metadata, design analysis results, file references, and timestamps — giving you a portable, structured record of your library.
+
+## How to export
+
+<Steps>
+  <Step title="Click the Export button">
+    Click the **Export** button in the toolbar at the top of the Screenshots view.
+  </Step>
+  <Step title="Choose a save location">
+    A file picker opens. Navigate to the folder where you want to save the file and give it a name.
+  </Step>
+  <Step title="Save the file">
+    Click **Save**. The JSON file is written to the location you chose. Large libraries may take a moment to write.
+  </Step>
+</Steps>
+
+## What's included in the export
+
+Each screenshot in the export contains two top-level objects: the screenshot record and its associated design specification.
+
+**Screenshot record:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique identifier |
+| `title` | string | Screenshot title |
+| `description` | string | Description text |
+| `imagePath` | string | Local file system path to the image |
+| `creationDate` | DateTime | When the record was created |
+| `uploadTimestamp` | DateTime | When the file was uploaded |
+| `sourceUrl` | string | Original URL, if provided |
+| `tags` | string[] | List of tags |
+| `categories` | string[] | List of categories |
+
+**Design specification (attached to each screenshot):**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique identifier |
+| `screenshotId` | string | References the parent screenshot |
+| `colorPalette` | array | Dominant colors with hex codes, roles, and usage context |
+| `layoutStructure` | object | Layout type, description, and structural properties |
+| `uiComponents` | array | Detected UI elements with bounding boxes and properties |
+| `typography` | array | Font styles, sizes, weights, and sample text |
+| `generalDesignInfo` | object | Additional design metadata |
+| `analysisTimestamp` | DateTime | When the analysis ran |
+| `analysisEngineVersion` | string | Version of the analysis engine used |
+
+<Note>
+Image paths in the export are **local file system paths** pointing to where the image is stored on your Mac. If you move or share the export file, the paths will not resolve on a different machine. Keep the image files alongside the JSON, or re-upload them on the target machine.
+</Note>
+
+## Use cases
+
+**Backup and recovery** — export your library periodically so you can restore it if something goes wrong with your local database.
+
+**Migration to other tools** — the structured JSON schema is easy to parse and import into other applications, databases, or design management systems.
+
+**Training datasets for ML models** — the color palette, layout structure, and UI component data make each screenshot a ready-made labeled example for machine learning workflows focused on design analysis.
+
+**Team sharing** — share a JSON export with teammates so they can import your curated library into their own instance of the app.
+
+## Export schema overview
+
+The full export is a JSON array where each element represents one screenshot and its associated design specification:
+
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Mobile login screen",
+    "description": "Clean login form with social sign-in options",
+    "imagePath": "/Users/you/Library/Application Support/ADH/images/login.png",
+    "creationDate": "2024-06-01T10:00:00Z",
+    "uploadTimestamp": "2024-06-01T10:00:05Z",
+    "sourceUrl": "https://dribbble.com/example",
+    "tags": ["mobile", "login", "form"],
+    "categories": ["Authentication", "Mobile Apps"],
+    "designSpecification": {
+      "id": "660e9500-f30c-52e5-b827-557766551111",
+      "screenshotId": "550e8400-e29b-41d4-a716-446655440000",
+      "colorPalette": [
+        { "hex": "#1A73E8", "role": "primary", "usageContext": "buttons", "proportion": 0.25 },
+        { "hex": "#FFFFFF", "role": "background", "usageContext": "surface", "proportion": 0.60 }
+      ],
+      "layoutStructure": {
+        "type": "vertical",
+        "description": "Single-column centered layout",
+        "properties": {}
+      },
+      "uiComponents": [],
+      "typography": [],
+      "generalDesignInfo": {},
+      "analysisTimestamp": "2024-06-01T10:00:10Z",
+      "analysisEngineVersion": "1.0.0"
+    }
+  }
+]
+```

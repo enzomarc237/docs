@@ -1,0 +1,123 @@
+---
+title: "Troubleshoot common AI Design Inspiration Hub issues"
+sidebarTitle: "Troubleshooting"
+description: "Fix upload failures, search problems, MCP server connection errors, performance slowdowns, and data or build issues in AI Design Inspiration Hub."
+---
+
+This page covers the most common problems you might encounter when using AI Design Inspiration Hub, grouped by category. Each entry describes the symptom and lists specific steps to resolve it. If a fix doesn't work, check the [FAQ](/faq) or open an issue on the project's GitHub repository with your macOS version, app version, steps to reproduce, and any error messages.
+
+## Upload issues
+
+<AccordionGroup>
+  <Accordion title="Image won't upload">
+    - Confirm the file is a supported format: PNG, JPG/JPEG, SVG, or WebP.
+    - Large files take longer to process. If the upload appears to hang, wait a moment before retrying.
+    - Check that you have enough free disk space on your startup volume.
+  </Accordion>
+
+  <Accordion title="Upload succeeds but image doesn't appear">
+    - Refresh the view by typing in the search bar or applying a filter, then clearing it.
+    - Close and reopen the application if the image still doesn't appear.
+  </Accordion>
+</AccordionGroup>
+
+## Search and filter issues
+
+<AccordionGroup>
+  <Accordion title="Search returns no results">
+    - Check your spelling and try a different keyword. Search is case-insensitive and supports partial matches.
+    - Click **Clear Filters** to remove any active tag or category filters, then search again.
+    - Verify that the screenshots you expect to find have the relevant tags or categories assigned to them.
+  </Accordion>
+
+  <Accordion title="Too many results">
+    - Click additional tags to narrow the view. Filters use AND logic, so each tag you add reduces the result set.
+    - Type a more specific term in the search bar.
+    - Filter by date range to limit results to a particular time period.
+  </Accordion>
+</AccordionGroup>
+
+## MCP server issues
+
+<AccordionGroup>
+  <Accordion title="Server won't start">
+    - The default port 8080 may already be in use by another application. Go to **Settings**, change the port to an unused value, and try again.
+    - Check your macOS firewall settings (**System Settings → Network → Firewall**) to confirm the app is allowed to accept incoming connections on localhost.
+  </Accordion>
+
+  <Accordion title="AI agent can't connect">
+    - Confirm the server is running — the status indicator in Settings should be green.
+    - Make sure you're using the correct API key. You can copy it again from the Settings key list.
+    - Verify the agent is connecting to the correct port, for example `http://localhost:8080`.
+    - The MCP server only accepts connections from localhost. Ensure the agent URL uses `http://localhost:PORT` and not a hostname or IP address.
+  </Accordion>
+
+  <Accordion title="API key doesn't work">
+    - Generate a new API key in **Settings → Generate New API Key** and use the fresh key.
+    - Copy the full key — even one missing character will cause authentication to fail.
+    - Check for leading or trailing spaces when pasting the key into your agent configuration.
+  </Accordion>
+</AccordionGroup>
+
+## Performance issues
+
+<AccordionGroup>
+  <Accordion title="App is slow with many screenshots">
+    - Use search and filters to narrow the view instead of loading all screenshots at once.
+    - Close and reopen the application to clear any accumulated memory usage.
+  </Accordion>
+
+  <Accordion title="Image analysis takes too long">
+    - Analysis runs in the background — you can continue using the app while it completes.
+    - Compress large image files before uploading to reduce analysis time.
+    - Upload fewer images at once to avoid queuing up long-running analysis tasks.
+  </Accordion>
+</AccordionGroup>
+
+## Data issues
+
+<AccordionGroup>
+  <Accordion title="Lost screenshots after restart">
+    - Check whether the database file exists at `~/Library/Application Support/ai_design_inspiration_hub/`. If the folder is missing or empty, the database may have been moved or deleted.
+    - If you previously exported your library, you can reference the JSON file to recover metadata and file references.
+    - Confirm that only one instance of the application is running at a time.
+  </Accordion>
+
+  <Accordion title="Export fails">
+    - Make sure you have write permissions for the destination folder you selected.
+    - Try exporting to a different location, such as your Desktop or Documents folder.
+    - Check that you have enough free disk space to write the export file.
+  </Accordion>
+</AccordionGroup>
+
+## Build issues
+
+These issues apply when you are building the app from source.
+
+<AccordionGroup>
+  <Accordion title='"flutter command not found"'>
+    - Install the Flutter SDK from [docs.flutter.dev/get-started/install](https://docs.flutter.dev/get-started/install).
+    - Add the Flutter `bin` directory to your `PATH` and restart your terminal.
+  </Accordion>
+
+  <Accordion title="Build errors">
+    Run the following commands in order to clean your build environment and regenerate all required files:
+
+    ```bash
+    flutter clean
+    flutter pub get
+    flutter pub run build_runner build --delete-conflicting-outputs
+    ```
+  </Accordion>
+
+  <Accordion title="Database errors on first launch">
+    Remove the existing database directory and let the application create a fresh one:
+
+    ```bash
+    rm -rf ~/Library/Application\ Support/ai_design_inspiration_hub/
+    flutter run -d macos
+    ```
+
+    <Warning>This deletes all locally stored screenshots and metadata. Export your library first if you want to preserve any data.</Warning>
+  </Accordion>
+</AccordionGroup>

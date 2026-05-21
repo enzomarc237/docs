@@ -1,0 +1,82 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "AI Design Inspiration Hub",
+  "theme": "willow",
+  "colors": {
+    "primary": "#848c8e",
+    "light": "#cfd0d2",
+    "dark": "#11161e"
+  },
+  "favicon": "https://media.brand.dev/2b01fe20-c04b-4a1d-a2f9-1d2789c50a7a.jpg",
+  "logo": {
+    "light": "https://media.brand.dev/5ffd6ce4-2434-4b4b-920a-f8cacac8b48b.svg",
+    "dark": "https://media.brand.dev/5ffd6ce4-2434-4b4b-920a-f8cacac8b48b.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/enzomarc237/ADH"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Using the App",
+            "pages": [
+              "guides/uploading-screenshots",
+              "guides/organizing-library",
+              "guides/searching-filtering",
+              "guides/exporting-data"
+            ]
+          },
+          {
+            "group": "MCP Server",
+            "pages": [
+              "mcp/overview",
+              "mcp/authentication",
+              "mcp/connecting-agents"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "troubleshooting",
+              "faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/health",
+              "api/list-screenshots",
+              "api/get-screenshot-metadata",
+              "api/get-design-specifications"
+            ]
+          },
+          {
+            "group": "Data Types",
+            "pages": [
+              "api/data-types"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

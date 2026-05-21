@@ -1,0 +1,126 @@
+---
+title: "Authenticate API requests with MCP server keys"
+sidebarTitle: "Authentication"
+description: "Generate API keys in Settings, pass them as Bearer tokens in every request, and revoke them instantly when an agent no longer needs access."
+---
+
+Every request to the MCP server's three tool endpoints must include a valid API key. The server uses Bearer token authentication: you generate a key inside the app, pass it in the `Authorization` header of each HTTP request, and revoke it from Settings whenever you want to cut off access. The `/health` endpoint is the only exception—it requires no credentials.
+
+## How authentication works
+
+Include your API key as a `Bearer` token in the `Authorization` header of every request:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+The server validates the key before processing the request. If the key is missing or invalid, the server returns a `403 Forbidden` response immediately.
+
+## Generating an API key
+
+<Steps>
+  <Step title="Open Settings">
+    Click **Settings** in the AI Design Inspiration Hub sidebar.
+  </Step>
+  <Step title="Generate a new key">
+    Click **Generate New API Key**. The app creates a unique key and displays it once.
+  </Step>
+  <Step title="Copy the key immediately">
+    Copy the key before closing the dialog. The full key value is not shown again after you dismiss it.
+  </Step>
+  <Step title="Provide the key to your agent">
+    Paste the key into your agent's configuration. Treat it like a password—do not commit it to source control.
+  </Step>
+</Steps>
+
+<Warning>
+  Copy your API key before closing the generation dialog. There is no way to retrieve the full key value afterward; you can only delete it and generate a new one.
+</Warning>
+
+## Passing the key in requests
+
+<CodeGroup>
+
+```bash curl
+curl -X POST http://localhost:8080/mcp/list-screenshots \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"pagination": {"limit": 10}}'
+```
+
+```python python
+import requests
+
+api_key = "YOUR_API_KEY"
+base_url = "http://localhost:8080"
+
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(
+    f"{base_url}/mcp/list-screenshots",
+    headers=headers,
+    json={"pagination": {"limit": 10}}
+)
+
+print(response.json())
+```
+
+</CodeGroup>
+
+## Managing keys
+
+All active API keys are listed in the Settings page. From there you can:
+
+- **Copy** — click the clipboard icon next to any key to copy it to your clipboard.
+- **Delete/revoke** — click the trash icon to permanently revoke a key. Agents using that key lose access immediately.
+
+<Note>
+  Deleting a key is instant and irreversible. Any agent configured with the deleted key will start receiving `403 Forbidden` errors on its next request.
+</Note>
+
+## Security best practices
+
+- **Keep keys secret** — treat API keys like passwords. Do not hard-code them in source files or commit them to version control. Use environment variables instead.
+- **Rotate keys periodically** — delete old keys and generate new ones on a regular schedule, or immediately after any suspected exposure.
+- **One key per agent** — assign each AI agent its own key. This lets you revoke access for a single agent without affecting others.
+
+## Authentication errors
+
+If a request is rejected, the server returns a `403 Forbidden` response with a JSON body:
+
+```json
+{
+  "error": {
+    "code": 403,
+    "message": "Invalid API key"
+  }
+}
+```
+
+Common causes:
+
+- The `Authorization` header is missing from the request.
+- The key was typed or pasted incorrectly (check for leading/trailing spaces).
+- The key was deleted in Settings.
+
+<Tip>
+  To verify your key is working before configuring an agent, run a quick health check followed by a `listScreenshots` request from the terminal. See [Connecting Agents](/mcp/connecting-agents) for the exact commands.
+</Tip>
+
+## The /health endpoint
+
+The `GET /health` endpoint does not require authentication. You can call it at any time to confirm the server is running:
+
+```bash
+curl http://localhost:8080/health
+```
+
+```json
+{
+  "status": "healthy",
+  "service": "AI Design Inspiration Hub MCP Server"
+}
+```

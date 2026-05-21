@@ -1,0 +1,66 @@
+---
+title: "MCP Server: Expose your design library to AI agents"
+sidebarTitle: "Overview"
+description: "Run a local MCP server to give AI agents structured access to your screenshots, metadata, and design specifications—without leaving your machine."
+---
+
+The MCP server is a local HTTP server built into AI Design Inspiration Hub. When you start it, your AI agents can query your entire design library—screenshots, tags, categories, and extracted design specifications—through a clean REST API. All traffic stays on your machine: the server only accepts connections from `localhost`, and every request must carry a valid API key you generate yourself.
+
+## What the MCP server exposes
+
+The server runs at `http://localhost:PORT` (default port `8080`) and provides three endpoints that map to three MCP tools:
+
+| Tool | Endpoint | Purpose |
+|---|---|---|
+| `listScreenshots` | `POST /mcp/list-screenshots` | Retrieve a paginated, filtered list of screenshots |
+| `getScreenshotMetadata` | `POST /mcp/get-screenshot-metadata` | Get full metadata for a specific screenshot |
+| `getDesignSpecifications` | `POST /mcp/get-design-specifications` | Get AI-parsable design specs for a screenshot |
+
+A fourth endpoint, `GET /health`, requires no authentication and lets agents verify the server is reachable.
+
+## MCP tools
+
+<CardGroup cols={3}>
+  <Card title="listScreenshots" icon="list" href="/api/list-screenshots">
+    Query your library with filters for tags, categories, date ranges, and title keywords. Supports pagination with `limit` and `offset`.
+  </Card>
+  <Card title="getScreenshotMetadata" icon="info" href="/api/get-screenshot-metadata">
+    Fetch the title, description, tags, categories, source URL, and upload timestamp for any screenshot by its UUID.
+  </Card>
+  <Card title="getDesignSpecifications" icon="palette" href="/api/get-design-specifications">
+    Access extracted color palettes, layout structure, detected UI components, and typography analysis in a structured JSON format.
+  </Card>
+</CardGroup>
+
+## Security model
+
+The MCP server is designed to keep your data local and under your control:
+
+- **Localhost only** — the server binds to `127.0.0.1` and rejects connections from other hosts.
+- **API key required** — every request to the three MCP endpoints must include a `Bearer` token in the `Authorization` header. You generate and revoke keys from Settings.
+- **No cloud sync** — your screenshots and design specs are stored in a local SQLite database. Nothing is transmitted externally.
+
+<Note>
+  The `/health` endpoint does not require an API key. You can use it to check whether the server is running without exposing credentials.
+</Note>
+
+## Starting the server
+
+<Steps>
+  <Step title="Open Settings">
+    Click **Settings** in the sidebar of the AI Design Inspiration Hub window.
+  </Step>
+  <Step title="Configure the port">
+    The default port is `8080`. If that port is already in use by another application, change it to any available port (for example, `8081` or `9000`).
+  </Step>
+  <Step title="Start the server">
+    Click **Start Server**. The status indicator turns green when the server is accepting connections.
+  </Step>
+  <Step title="Generate an API key">
+    Click **Generate New API Key**, then copy the key immediately. You will not be able to view it again after closing the dialog.
+  </Step>
+</Steps>
+
+<Tip>
+  If the server fails to start, the port is most likely occupied. Change the port in Settings and try again. See [Connecting Agents](/mcp/connecting-agents) for connection troubleshooting.
+</Tip>

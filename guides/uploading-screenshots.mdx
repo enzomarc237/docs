@@ -1,0 +1,89 @@
+---
+title: "Upload screenshots and wireframes to your library"
+sidebarTitle: "Upload Screenshots"
+description: "Add PNG, JPG, SVG, or WebP image files to your design library using the upload button or drag and drop, then enrich each with title, tags, and categories."
+---
+
+Your design library grows one screenshot at a time. AI Design Inspiration Hub accepts PNG, JPG/JPEG, SVG, and WebP files and lets you attach rich metadata — title, description, tags, categories, and a source URL — so both you and your AI agents can find exactly what you need later.
+
+## Upload methods
+
+<Tabs>
+  <Tab title="Upload button">
+    <Steps>
+      <Step title="Open the upload dialog">
+        Click the **Upload** button in the toolbar at the top of the Screenshots view.
+      </Step>
+      <Step title="Fill in the metadata form">
+        Complete the fields in the form before selecting your file:
+
+        - **Title** — a short, descriptive name for the screenshot
+        - **Description** — context about the design or why you saved it
+        - **Tags** — comma-separated labels (e.g., `mobile, login, blue`)
+        - **Categories** — comma-separated categories (e.g., `Authentication, Mobile Apps`)
+        - **Source URL** — optionally record where you found the design
+      </Step>
+      <Step title="Select your image and upload">
+        Click **Upload**, choose the image file from your file picker, and confirm. The screenshot appears in your library grid immediately.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Drag and drop">
+    <Steps>
+      <Step title="Drag the image from Finder">
+        Locate your image file in Finder and start dragging it.
+      </Step>
+      <Step title="Drop it onto the app window">
+        Release the file anywhere over the AI Design Inspiration Hub window. A drop target highlights to confirm the drop zone is active.
+      </Step>
+      <Step title="Fill in the metadata form and confirm">
+        The same metadata form appears. Add a title, description, tags, categories, and an optional source URL, then confirm to save.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Supported formats
+
+The app accepts the following image formats:
+
+| Format | Extension |
+|--------|-----------|
+| PNG | `.png` |
+| JPEG | `.jpg`, `.jpeg` |
+| SVG | `.svg` |
+| WebP | `.webp` |
+
+<Note>
+Very large files are supported but may take longer to process. Compressing images before uploading can improve performance.
+</Note>
+
+## Metadata fields
+
+Each screenshot stores the following metadata fields:
+
+- **Title** — displayed on the screenshot card in the grid; used in search.
+- **Description** — longer notes about the design; also searchable.
+- **Tags** — flexible, comma-separated labels used for filtering (e.g., `"mobile"`, `"dashboard"`, `"form"`).
+- **Categories** — broader groupings for hierarchical organization (e.g., `"Authentication"`, `"E-commerce"`).
+- **Source URL** — an optional link to the original design for future reference.
+
+## What happens after upload
+
+Once your file is saved, the app begins automatic analysis in the background. You can keep working while it runs. The analysis extracts:
+
+- **Color palette** — dominant colors with their hex codes
+- **Layout information** — layout type and overall structure
+- **UI components** — detected interface elements *(expanding in future releases)*
+
+The analysis results are attached to the screenshot and made available to AI agents via the MCP server.
+
+## Viewing screenshot details
+
+Click on any screenshot in the grid to open the detail view. From there you can see:
+
+- The full-size image
+- All metadata (title, description, tags, categories, source URL)
+- Extracted design specifications
+- Color palette visualization
+- Upload and creation timestamps

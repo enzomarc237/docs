@@ -1,0 +1,135 @@
+---
+title: "Install and build AI Design Inspiration Hub on macOS"
+sidebarTitle: "Installation"
+description: "System requirements, build steps, release packaging, and troubleshooting for installing AI Design Inspiration Hub on macOS from source."
+---
+
+AI Design Inspiration Hub is distributed as source code and built locally using Flutter. This page covers everything you need to go from a fresh clone to a running app, including how to build a release binary and package it as a DMG for distribution.
+
+## System requirements
+
+Before building, confirm your machine meets these requirements:
+
+| Requirement | Minimum version |
+|---|---|
+| macOS | Ventura (13.0) |
+| Flutter SDK | 3.0 |
+
+Flutter 3.0+ is required for macOS desktop support. You can check your installed version with `flutter --version`. If you need to install or upgrade Flutter, follow the [official installation guide](https://docs.flutter.dev/get-started/install).
+
+## Installation steps
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/enzomarc237/ADH.git
+    cd ADH
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Fetch all Flutter package dependencies declared in `pubspec.yaml`:
+
+    ```bash
+    flutter pub get
+    ```
+  </Step>
+
+  <Step title="Generate serialization code">
+    The app uses `json_serializable` for model serialization. Run `build_runner` to generate the required `.g.dart` files:
+
+    ```bash
+    flutter pub run build_runner build --delete-conflicting-outputs
+    ```
+
+    <Note>
+      Run this command again any time you modify a model file annotated with `@JsonSerializable`. The `--delete-conflicting-outputs` flag removes stale generated files before rebuilding.
+    </Note>
+  </Step>
+
+  <Step title="Run the app">
+    Launch the app in development mode on macOS:
+
+    ```bash
+    flutter run -d macos
+    ```
+
+    The app window opens once the build completes.
+  </Step>
+</Steps>
+
+## Development mode tips
+
+When the app is running with `flutter run`, you can use the following keyboard shortcuts in the terminal:
+
+<Tip>
+  - Press `r` to hot reload (applies code changes without restarting)
+  - Press `R` to hot restart (full restart, clears state)
+  - Press `q` to quit
+</Tip>
+
+Hot reload is fast and works well for UI changes. Hot restart is needed for changes to app initialization logic or database setup.
+
+## Building a release binary
+
+To build an optimized release version of the app:
+
+```bash
+flutter build macos --release
+```
+
+The compiled app bundle is written to:
+
+```
+build/macos/Build/Products/Release/ai_design_inspiration_hub.app
+```
+
+## Creating a DMG
+
+To package the release build as a DMG for distribution, use the `create-dmg` tool:
+
+```bash
+npm install --global create-dmg
+```
+
+```bash
+create-dmg build/macos/Build/Products/Release/ai_design_inspiration_hub.app
+```
+
+This produces a `.dmg` file in the current directory that can be shared or distributed.
+
+## Troubleshooting
+
+### Build errors after pulling new changes
+
+If the build fails after updating the repository, clean the build artifacts and regenerate everything from scratch:
+
+```bash
+flutter clean
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter run -d macos
+```
+
+### Database errors on startup
+
+If the app fails to start with a database-related error — for example after a schema change — remove the local database directory and let the app recreate it:
+
+```bash
+rm -rf ~/Library/Application\ Support/ai_design_inspiration_hub/
+flutter run -d macos
+```
+
+<Warning>
+  This deletes all locally stored screenshots and metadata. Export your library first if you want to preserve your data.
+</Warning>
+
+### `flutter` command not found
+
+Add Flutter to your `PATH`. The exact path depends on where you installed the Flutter SDK — for example:
+
+```bash
+export PATH="$HOME/flutter/bin:$PATH"
+```
+
+Add this line to your shell configuration file (`.zshrc` or `.bash_profile`) to make it permanent.
